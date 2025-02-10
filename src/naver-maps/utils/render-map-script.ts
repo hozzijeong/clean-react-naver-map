@@ -6,7 +6,7 @@ const loadMapScript = async (src: string) => {
 	script.src = src;
 	script.type = 'text/javascript';
 
-	document.body.appendChild(script);
+	return script;
 };
 
 const generateSrc = (config: ClientConfig) => {
@@ -34,18 +34,23 @@ const generateSrc = (config: ClientConfig) => {
 	return src;
 };
 
-export const initializeMap = async (
-	config: ClientConfig
-): Promise<typeof naver.maps> => {
+interface LoadMapScriptParams {
+	config: ClientConfig;
+	loadCallback?: () => void;
+	errorCallback?: () => void;
+}
+
+export const loadNaverMapScript = async ({
+	config,
+	loadCallback,
+	errorCallback,
+}: LoadMapScriptParams) => {
 	const src = generateSrc(config);
 
-	await loadMapScript(src);
+	const script = await loadMapScript(src);
 
-	return new Promise((resolve) => {
-		const naverMaps = window.naver.maps;
+	script.addEventListener('load', () => loadCallback && loadCallback());
+	script.addEventListener('error', () => errorCallback && errorCallback());
 
-		return naverMaps.onJSContentLoaded(() => {
-			resolve(naverMaps);
-		});
-	});
+	return script;
 };
