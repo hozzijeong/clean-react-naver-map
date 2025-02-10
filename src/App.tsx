@@ -1,5 +1,18 @@
+import { NaverMapProvider } from './naver-maps/context/NaverMapProvider';
+import useLoadNaverMapScript from './naver-maps/hooks/useLoadNaverMapScript';
+
 function App() {
-	return <div>안녕하세요??</div>;
+	const status = useLoadNaverMapScript({
+		ncpClientId: import.meta.env.VITE_NCP_CLIENT_ID,
+	});
+
+	if (status === 'loading') return null;
+
+	return (
+		<NaverMapProvider>
+			<div></div>
+		</NaverMapProvider>
+	);
 }
 
 export default App;
