@@ -31,6 +31,10 @@ const generateSrc = (config: ClientConfig) => {
 		src += `&submodules=${config.submodules.join(',')}`;
 	}
 
+	if (config.language) {
+		src += `&language=${config.language}`;
+	}
+
 	return src;
 };
 
