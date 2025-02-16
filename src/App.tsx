@@ -9,7 +9,14 @@ function App() {
 	if (status === 'loading') return null;
 
 	return (
-		<NaverMapProvider>
+		<NaverMapProvider mapId='map'>
+			<div
+				id='map'
+				style={{
+					width: '100%',
+					height: '400px',
+				}}
+			/>
 			<div></div>
 		</NaverMapProvider>
 	);
