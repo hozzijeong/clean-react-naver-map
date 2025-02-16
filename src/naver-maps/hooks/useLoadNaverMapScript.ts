@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadNaverMapScript } from '../utils/render-map-script';
-import { ClientConfig } from '../types';
+import { ClientConfig } from '../script.types';
 
 type Status = 'success' | 'loading' | 'error';
 

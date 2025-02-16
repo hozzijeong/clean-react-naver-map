@@ -1,4 +1,4 @@
-import { ClientConfig } from '../types';
+import { ClientConfig } from '../script.types';
 
 const loadMapScript = async (src: string) => {
 	const script = document.createElement('script');
