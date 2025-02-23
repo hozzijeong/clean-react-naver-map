@@ -1,5 +1,7 @@
 import {
 	createContext,
+	createElement,
+	CSSProperties,
 	PropsWithChildren,
 	useCallback,
 	useContext,
@@ -14,6 +16,8 @@ interface Props extends PropsWithChildren {
 	mapElement: string | HTMLElement;
 	options?: naver.maps.MapOptions;
 	eventHandlers?: NaverMapEventHandlers;
+	className?: string;
+	style?: CSSProperties;
 }
 
 // NOTE: mapElement 동일한 id를 가진 태그를 Provider내부에 함께 위치시킬 것
@@ -22,11 +26,13 @@ export const NaverMapProvider = ({
 	options = {},
 	eventHandlers = {},
 	mapElement,
+	className,
+	style,
 }: Props) => {
 	const [map, setMap] = useState<naver.maps.Map | null>(null);
 
 	const handleAddEventListeners = useNaverMapEventListener();
-	useEffect(() => {
+	const renderNaverMap = useCallback(() => {
 		if (map) return;
 
 		const naverMap = new naver.maps.Map(mapElement, { ...options });
@@ -43,17 +49,18 @@ export const NaverMapProvider = ({
 		};
 	}, [eventHandlers, handleAddEventListeners, map, mapElement, options]);
 
+	useEffect(() => {
+		const unmount = renderNaverMap();
+
+		return unmount;
+	}, [renderNaverMap]);
+
 	const memoizedMap = useMemo(() => map, [map]);
 
 	return (
 		<NaverMapContext.Provider value={memoizedMap}>
-			<div
-				id='map'
-				style={{
-					width: '100%',
-					height: '400px',
-				}}
-			/>
+			{typeof mapElement === 'string' &&
+				createElement('div', { id: mapElement, className, style })}
 			<>{memoizedMap && children}</>
 		</NaverMapContext.Provider>
 	);
