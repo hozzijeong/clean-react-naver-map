@@ -1,3 +1,4 @@
+import { TestTemplate } from './naver-maps/components/TestTemplate';
 import { NaverMapProvider } from './naver-maps/context/NaverMapProvider';
 import useLoadNaverMapScript from './naver-maps/hooks/useLoadNaverMapScript';
 
@@ -9,15 +10,23 @@ function App() {
 	if (status === 'loading') return null;
 
 	return (
-		<NaverMapProvider mapId='map'>
-			<div
-				id='map'
-				style={{
+		<NaverMapProvider
+			mapElement={{
+				id: 'map',
+				style: {
 					width: '100%',
-					height: '400px',
-				}}
-			/>
-			<div></div>
+					height: '100vh',
+				},
+			}}
+			options={{
+				mapTypeId: 'terrain',
+			}}
+			eventHandlers={{
+				click: () => console.log('click'),
+				idle: () => console.log('idle'),
+			}}
+		>
+			<TestTemplate />
 		</NaverMapProvider>
 	);
 }

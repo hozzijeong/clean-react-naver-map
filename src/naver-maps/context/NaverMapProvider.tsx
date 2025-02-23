@@ -16,8 +16,16 @@ import {
 
 const NaverMapContext = createContext<naver.maps.Map | null>(null);
 
+type MapElement =
+	| {
+			id: string;
+			style?: CSSProperties;
+			className?: string;
+	  }
+	| HTMLElement;
+
 interface Props extends PropsWithChildren {
-	mapElement: string | HTMLElement;
+	mapElement: MapElement;
 	options?: naver.maps.MapOptions;
 	eventHandlers?: NaverMapEventHandlers;
 	className?: string;
@@ -30,8 +38,6 @@ export const NaverMapProvider = ({
 	options = {},
 	eventHandlers = {},
 	mapElement,
-	className,
-	style,
 }: Props) => {
 	const [map, setMap] = useState<naver.maps.Map | null>(null);
 
@@ -39,7 +45,10 @@ export const NaverMapProvider = ({
 	const renderNaverMap = useCallback(() => {
 		if (map) return;
 
-		const naverMap = new naver.maps.Map(mapElement, { ...options });
+		const element =
+			mapElement instanceof HTMLElement ? mapElement : mapElement.id;
+
+		const naverMap = new naver.maps.Map(element, { ...options });
 
 		setMap(naverMap);
 
@@ -63,8 +72,8 @@ export const NaverMapProvider = ({
 
 	return (
 		<NaverMapContext.Provider value={memoizedMap}>
-			{typeof mapElement === 'string' &&
-				createElement('div', { id: mapElement, className, style })}
+			{!(mapElement instanceof HTMLElement) &&
+				createElement('div', { ...mapElement })}
 			<>{memoizedMap && children}</>
 		</NaverMapContext.Provider>
 	);
