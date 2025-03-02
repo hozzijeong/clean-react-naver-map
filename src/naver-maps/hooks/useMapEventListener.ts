@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
+import { CommonEventHandlers } from '../event.types';
 
-export interface NaverMapEventHandlers {
+export interface NaverMapEventHandlers extends CommonEventHandlers {
 	addLayer?: (layer: naver.maps.Layer) => void;
 	bounds_changed?: (bounds: naver.maps.Bounds) => void;
 	center_changed?: (center: naver.maps.Coord) => void;
 	centerPoint_changed?: (centerPoint: naver.maps.Point) => void;
-	click?: (pointerEvent: PointerEvent) => void;
-	dblclick?: (pointerEvent: PointerEvent) => void;
 	doubletap?: (pointerEvent: PointerEvent) => void;
 	drag?: (pointerEvent: PointerEvent) => void;
 	dragend?: (pointerEvent: PointerEvent) => void;
@@ -18,11 +17,9 @@ export interface NaverMapEventHandlers {
 	longtap?: (pointerEvent: PointerEvent) => void;
 	mapType_changed?: (mapType: naver.maps.MapType) => void;
 	mapTypeId_changed?: (mapTypeId: naver.maps.MapTypeId | string) => void;
-	mousedown?: (pointerEvent: PointerEvent) => void;
 	mousemove?: (pointerEvent: PointerEvent) => void;
 	mouseout?: (pointerEvent: PointerEvent) => void;
 	mouseover?: (pointerEvent: PointerEvent) => void;
-	mouseup?: (pointerEvent: PointerEvent) => void;
 	panning?: () => void;
 	pinch?: (pointerEvent: PointerEvent) => void;
 	pinchend?: (pointerEvent: PointerEvent) => void;
@@ -30,13 +27,10 @@ export interface NaverMapEventHandlers {
 	projection_changed?: (projection: naver.maps.Projection) => void;
 	removeLayer?: (layername: string) => void;
 	resize?: () => void;
-	rightclick?: (pointerEvent: PointerEvent) => void;
 	size_changed?: (size: naver.maps.Size) => void;
 	tap?: (pointerEvent: PointerEvent) => void;
 	tilesloaded?: () => void;
-	touchend?: (pointerEvent: PointerEvent) => void;
 	touchmove?: (pointerEvent: PointerEvent) => void;
-	touchstart?: (pointerEvent: PointerEvent) => void;
 	twofingertap?: (pointerEvent: PointerEvent) => void;
 	zoom_changed?: (zoom: number) => void;
 	zoomend?: () => void;

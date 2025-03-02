@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { CommonEventHandlers } from '../../../event.types';
 
 type ImageIcon = {
 	url: string;
@@ -58,20 +59,13 @@ export interface ImperativeMarker {
 	setMarker: (options: MarkerOptions) => void;
 }
 
-export interface MarkerEventHandlers {
-	click?: (event: PointerEvent) => void;
+export interface MarkerEventHandlers extends CommonEventHandlers {
 	clickable_changed?: (clickable: boolean) => void;
-	dblclick?: (event: PointerEvent) => void;
 	draggable_changed?: (draggable: boolean) => void;
 	icon_changed?: (icon: MarkerIcon) => void;
 	icon_loaded?: (marker: naver.maps.Marker) => void;
-	mousedown?: (event: PointerEvent) => void;
-	mouseup?: (event: PointerEvent) => void;
 	position_changed?: (position: naver.maps.Coord) => void;
-	rightclick?: (event: PointerEvent) => void;
 	title_changed?: (title: string) => void;
-	touchend?: (event: PointerEvent) => void;
-	touchstart?: (event: PointerEvent) => void;
 	visible_changed?: (visible: boolean) => void;
 	zIndex_changed?: (zIndex: number) => void;
 }
