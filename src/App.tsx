@@ -18,9 +18,6 @@ function App() {
 					height: '100vh',
 				},
 			}}
-			options={{
-				mapTypeId: 'terrain',
-			}}
 			eventHandlers={{
 				click: () => console.log('click'),
 				idle: () => console.log('idle'),
