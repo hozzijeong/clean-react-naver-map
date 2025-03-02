@@ -1,78 +1,81 @@
 import {
 	forwardRef,
-	isValidElement,
 	memo,
 	useCallback,
 	useImperativeHandle,
 	useLayoutEffect,
 	useRef,
 } from 'react';
-import { ImperativeMarker, MarkerIcon, MarkerOptions } from './marker.types';
+import {
+	ImperativeMarker,
+	MarkerEventHandlers,
+	MarkerOptions,
+} from './marker.types';
 import { useNaverMap } from '../../../context/NaverMapProvider';
-import { renderToStaticMarkup } from 'react-dom/server';
 
-const convertNaverMapMarkerIcon = (icon?: MarkerIcon) => {
-	if (typeof icon === 'object' && icon !== null && 'content' in icon) {
-		const { content, ...rest } = icon;
+import { convertNaverMapMarkerIcon } from './utils/convert-naver-map-marker-icon';
+import { addEventListener } from './utils/add-event-listener';
 
-		let convertedContent: string | HTMLElement = content as
-			| string
-			| HTMLElement;
+interface Props {
+	options: MarkerOptions;
+	listeners?: MarkerEventHandlers;
+}
 
-		if (isValidElement(content)) {
-			convertedContent = renderToStaticMarkup(content);
-		}
+const Marker = forwardRef<ImperativeMarker, Props>(
+	({ options, listeners }, ref) => {
+		const map = useNaverMap();
 
-		return {
-			...rest,
-			content: convertedContent,
-		};
-	}
+		const markerRef = useRef<naver.maps.Marker | null>(null);
 
-	return icon;
-};
+		useImperativeHandle(ref, () => ({
+			getMarker: () => ({
+				marker: markerRef.current,
+				markerId: options.markerId,
+			}),
+			setMarker: (options: Omit<MarkerOptions, 'markerId'>) => {
+				if (!markerRef.current) return;
+				const { icon, ...rest } = options;
 
-const Marker = forwardRef<ImperativeMarker, MarkerOptions>((props, ref) => {
-	const map = useNaverMap();
+				const markerIcon = convertNaverMapMarkerIcon(icon);
 
-	const markerRef = useRef<naver.maps.Marker | null>(null);
+				markerRef.current.setOptions({ map, icon: markerIcon, ...rest });
+			},
+		}));
 
-	useImperativeHandle(ref, () => ({
-		getMarker: () => ({ marker: markerRef.current, markerId: props.markerId }),
-		setMarker: (options: Omit<MarkerOptions, 'markerId'>) => {
-			if (!markerRef.current) return;
+		const renderMarker = useCallback(() => {
 			const { icon, ...rest } = options;
 
 			const markerIcon = convertNaverMapMarkerIcon(icon);
 
-			markerRef.current.setOptions({ map, icon: markerIcon, ...rest });
-		},
-	}));
+			const marker = new naver.maps.Marker({
+				map,
+				icon: markerIcon,
+				...rest,
+			});
 
-	const renderMarker = useCallback(() => {
-		const { icon, ...rest } = props;
+			let removeListeners: () => void;
 
-		const markerIcon = convertNaverMapMarkerIcon(icon);
+			if (listeners) {
+				removeListeners = addEventListener(marker, listeners);
+			}
 
-		markerRef.current = new naver.maps.Marker({
-			map,
-			icon: markerIcon,
-			...rest,
-		});
+			markerRef.current = marker;
 
-		return () => {
-			markerRef.current?.setMap(null);
-			markerRef.current = null;
-		};
-	}, [map, props]);
+			return () => {
+				marker.setMap(null);
+				markerRef.current = null;
+				removeListeners();
+			};
+		}, [listeners, map, options]);
 
-	useLayoutEffect(() => {
-		const unmount = renderMarker();
+		useLayoutEffect(() => {
+			const unmount = renderMarker();
 
-		return unmount;
-	}, [renderMarker]);
+			return unmount;
+		}, [renderMarker]);
 
-	return <></>;
-});
+		return <></>;
+	}
+);
 
 export default memo(Marker);
