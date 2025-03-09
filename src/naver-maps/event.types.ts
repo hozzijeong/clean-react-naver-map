@@ -1,3 +1,12 @@
+export interface PointerEvent {
+	coord: naver.maps.Coord;
+	point: naver.maps.Point;
+	offset: naver.maps.Point;
+	originalEvent: Event;
+	pointerEvent: Event;
+	overlay?: naver.maps.OverlayView;
+}
+
 export interface CommonEventHandlers {
 	click?: (event: PointerEvent) => void;
 	dblclick?: (event: PointerEvent) => void;
