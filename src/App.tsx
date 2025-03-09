@@ -18,6 +18,9 @@ function App() {
 					height: '100vh',
 				},
 			}}
+			options={{
+				center: new naver.maps.LatLng(37.3595704, 127.105399),
+			}}
 			eventHandlers={{
 				click: () => console.log('click'),
 				idle: () => console.log('idle'),
