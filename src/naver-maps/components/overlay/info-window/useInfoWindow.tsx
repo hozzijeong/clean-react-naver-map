@@ -1,6 +1,10 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { InfoWindowContent, InfoWindowOptions } from './info-window.types';
+import {
+	InfoWindowContent,
+	InfoWindowEventHandlers,
+	InfoWindowOptions,
+} from './info-window.types';
 
 const contentToHTMLRender = (content: InfoWindowContent) => {
 	if (!(content instanceof HTMLElement)) {
@@ -12,15 +16,29 @@ const contentToHTMLRender = (content: InfoWindowContent) => {
 
 interface Props {
 	options: InfoWindowOptions;
+	eventListeners?: InfoWindowEventHandlers;
 }
 
-const useInfoWindow = ({ options }: Props) => {
+const useInfoWindow = ({ options, eventListeners }: Props) => {
 	const infoWindowRef = useRef<naver.maps.InfoWindow>(
 		new naver.maps.InfoWindow({
 			...options,
 			content: contentToHTMLRender(options.content),
 		})
 	);
+
+	useEffect(() => {
+		const infoWindow = infoWindowRef.current;
+		if (!eventListeners) return;
+
+		const listeners = Object.entries(eventListeners).map(
+			([eventName, listener]) => infoWindow.addListener(eventName, listener)
+		);
+
+		return () => {
+			infoWindow.removeListener(listeners);
+		};
+	}, [eventListeners]);
 
 	const infoWindow = useMemo(
 		() => ({
