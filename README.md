@@ -1,50 +1,27 @@
-# React + TypeScript + Vite
+# React Naver Map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Introduce
 
-Currently, two official plugins are available:
+네이버 지도 API를 리액트에서 간편하게 사용할 수 있도록 래핑한 라이브러리 입니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+NaverAPI 생성 계획은 다음과 같습니다. (배포시 제거할 것)
 
-## Expanding the ESLint configuration
+- 지도 (1주차)
+  - 언어 설정
+  - 지도 생성 및 기본 동작
+  - 지도 유형
+  - 지도 투영과 좌표 체계
+- 이벤트 (2주차)
+  - 이벤트 등록 및 제거 (이벤트 등록에 필요한 타입 정의)
+- 컨트롤 (3주차)
+- 데이터 표시 (4,5주차)
+- 오버레이 (6, 7주치)
+- 라이브러리 배포
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+(이후 작업 예정)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- 파노라마
+- 좌표 - 주소 변환
+- 그리기 도구
