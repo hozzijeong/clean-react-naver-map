@@ -1,10 +1,6 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import {
-	ImperativeInfoWindow,
-	InfoWindowContent,
-	InfoWindowOptions,
-} from './info-window.types';
+import { InfoWindowContent, InfoWindowOptions } from './info-window.types';
 
 const contentToHTMLRender = (content: InfoWindowContent) => {
 	if (!(content instanceof HTMLElement)) {
@@ -18,16 +14,16 @@ interface Props {
 	options: InfoWindowOptions;
 }
 
-const InfoWindow = forwardRef<ImperativeInfoWindow, Props>(
-	({ options }, ref) => {
-		const infoWindowRef = useRef<naver.maps.InfoWindow>(
-			new naver.maps.InfoWindow({
-				...options,
-				content: contentToHTMLRender(options.content),
-			})
-		);
+const useInfoWindow = ({ options }: Props) => {
+	const infoWindowRef = useRef<naver.maps.InfoWindow>(
+		new naver.maps.InfoWindow({
+			...options,
+			content: contentToHTMLRender(options.content),
+		})
+	);
 
-		useImperativeHandle(ref, () => ({
+	const infoWindow = useMemo(
+		() => ({
 			open: (
 				map: naver.maps.Map,
 				anchor?: naver.maps.Coord | naver.maps.Marker | naver.maps.CoordLiteral
@@ -40,10 +36,10 @@ const InfoWindow = forwardRef<ImperativeInfoWindow, Props>(
 			getOptions: () => infoWindowRef.current.getOptions(),
 			getPosition: () => infoWindowRef.current.getPosition(),
 			getZIndex: () => infoWindowRef.current.getZIndex(),
-			setContent: (content) => {
+			setContent: (content: InfoWindowContent) => {
 				return infoWindowRef.current.setContent(contentToHTMLRender(content));
 			},
-			setOptions: (options) => {
+			setOptions: (options: InfoWindowOptions) => {
 				return infoWindowRef.current.setOptions({
 					...options,
 					content: contentToHTMLRender(options.content),
@@ -51,11 +47,12 @@ const InfoWindow = forwardRef<ImperativeInfoWindow, Props>(
 			},
 			setPosition: (position: naver.maps.Coord | naver.maps.CoordLiteral) =>
 				infoWindowRef.current.setPosition(position),
-			setZIndex: (number) => infoWindowRef.current.setZIndex(number),
-		}));
+			setZIndex: (number: number) => infoWindowRef.current.setZIndex(number),
+		}),
+		[]
+	);
 
-		return <></>;
-	}
-);
+	return infoWindow;
+};
 
-export default InfoWindow;
+export default useInfoWindow;
